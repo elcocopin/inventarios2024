@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Producto;
+use App\Models\Carnes;
 use Illuminate\Http\Request;
 
-class ProductoController extends Controller
+class CarnesController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $productos = Carnes::all();
+        return view("welcome", ["productos" => $productos]);
     }
 
     /**
@@ -34,15 +35,16 @@ class ProductoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Producto $producto)
+    public function show($id)
     {
-        //
+        $productos = Carnes::find($id);
+        return view("detalle", compact("productos"));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Producto $producto)
+    public function edit(Carnes $carnes)
     {
         //
     }
@@ -50,7 +52,7 @@ class ProductoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Producto $producto)
+    public function update(Request $request, Carnes $carnes)
     {
         //
     }
@@ -58,7 +60,7 @@ class ProductoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Producto $producto)
+    public function destroy(Carnes $Carnes)
     {
         //
     }
