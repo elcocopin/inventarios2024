@@ -13,16 +13,7 @@ class ProductoController extends Controller
      */
     public function index()
     {
-        $productos = Producto::all();
-        return view('welcome', compact('productos'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return response()->json(Producto::all(), 200); // Mostrar todos los productos
     }
 
     /**
@@ -30,7 +21,22 @@ class ProductoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //validar datos
+        $datos = $request->validate([
+            'tipo' => ['required', 'string', 'max:100'],
+            'kilogramos' => ['nullable', 'string', 'max:255'],
+            'coste' => ['required', 'integer', 'min:1000'],
+            'stock' => ['required', 'integer', 'min:1'],
+        ]);
+
+        //guardar datos
+        $producto = Producto::create($datos);
+
+        //respuesta al cliente
+        return response()->json([
+            'success' => true,
+            'message' => 'Producto creado exitosamente',
+        ], 201);
     }
 
     /**
@@ -38,15 +44,7 @@ class ProductoController extends Controller
      */
     public function show(Producto $producto)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Producto $producto)
-    {
-        //
+        return response()->json($producto, 200); // Mostrar un producto
     }
 
     /**
@@ -54,7 +52,22 @@ class ProductoController extends Controller
      */
     public function update(Request $request, Producto $producto)
     {
-        //
+         //validar datos
+         $datos = $request->validate([
+            'tipo' => ['required', 'string', 'max:100'],
+            'kilogramos' => ['nullable', 'string', 'max:255'],
+            'coste' => ['required', 'integer', 'min:1000'],
+            'stock' => ['required', 'integer', 'min:1'],
+        ]);
+
+        //actualizar datos
+        $producto->update($datos);
+
+        //respuesta al cliente
+        return response()->json([
+            'success' => true,
+            'message' => 'Producto actualizado exitosamente',
+        ], 200);
     }
 
     /**
@@ -62,6 +75,13 @@ class ProductoController extends Controller
      */
     public function destroy(Producto $producto)
     {
-        //
+        //eliminar producto
+        $producto->delete();
+        
+        //Respuesta al cliente
+        return response()->json([
+            'success' => true,
+            'message' => 'Producto eliminado exitosamente',
+        ], 204);
     }
 }

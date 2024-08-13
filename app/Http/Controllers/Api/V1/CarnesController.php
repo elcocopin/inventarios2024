@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\Controller;
 use App\Models\Carnes;
 use Illuminate\Http\Request;
 
@@ -12,16 +13,7 @@ class CarnesController extends Controller
      */
     public function index()
     {
-        $productos = Carnes::all();
-        return view("welcome", ["productos" => $productos]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return response()->json(Carnes::all(), 200); // Mostrar todos los productos
     }
 
     /**
@@ -29,24 +21,30 @@ class CarnesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //validar datos
+        $datos = $request->validate([
+            'nombre' => ['required', 'string', 'max:100'],
+            'descripcion' => ['nullable', 'string', 'max:255'],
+            'precio' => ['required', 'integer', 'min:1000'],
+            'stock' => ['required', 'integer', 'min:1'],
+        ]);
+
+        //guardar datos
+        $carnes = Carnes::create($datos);
+
+        //respuesta al cliente
+        return response()->json([
+            'success' => true,
+            'message' => 'Producto creado exitosamente',
+        ], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(Carnes $carnes)
     {
-        $productos = Carnes::find($id);
-        return view("detalle", compact("productos"));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Carnes $carnes)
-    {
-        //
+        return response()->json($carnes, 200); // Mostrar un producto
     }
 
     /**
@@ -54,14 +52,36 @@ class CarnesController extends Controller
      */
     public function update(Request $request, Carnes $carnes)
     {
-        //
+         //validar datos
+         $datos = $request->validate([
+            'nombre' => ['required', 'string', 'max:100'],
+            'descripcion' => ['nullable', 'string', 'max:255'],
+            'precio' => ['required', 'integer', 'min:1000'],
+            'stock' => ['required', 'integer', 'min:1'],
+        ]);
+
+        //actualizar datos
+        $carnes->update($datos);
+
+        //respuesta al cliente
+        return response()->json([
+            'success' => true,
+            'message' => 'Producto actualizado exitosamente',
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Carnes $Carnes)
+    public function destroy(Carnes $carnes)
     {
-        //
+        //eliminar producto
+        $carnes->delete();
+        
+        //Respuesta al cliente
+        return response()->json([
+            'success' => true,
+            'message' => 'Producto eliminado exitosamente',
+        ], 204);
     }
 }
